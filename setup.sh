@@ -1,6 +1,6 @@
 #! /bin/bash
 
-serverip="47.104.10.43"
+serverip='47.104.10.43'
 dirname=$(basename `pwd`)
 
 echo 'Start deploying XLP system...'
@@ -41,6 +41,7 @@ fi
 echo 'Creating directories...'
 mkdir /data
 mkdir /data/xlpsystem
+mkdir /data/db_pak
 echo 'Finished checking system environment.'
 
 # Initializing containers
@@ -50,6 +51,11 @@ echo 'Waiting 30s for containers to finish initializing...'
 sleep 30s
 
 echo 'Fetching data from server...' #===============================================
+cp ./pw.passwd /data/pw.passwd
+chmod 600 /data/pw.passwd
+rsync -vazu --progress --delete root@${serverip}::xlpdb /data/db_pak --password-file=/data/pw.passwd
+echo 'Restoring data...'
+docker exec -u root ${dirname}_mariadb_1 mysql -u root -A -p W2qgpsLtQt < /data/db_pak/xlp.sql
 
 echo 'Stopping containers...'
 docker-compose down
@@ -58,7 +64,6 @@ echo 'Containers successfully initialized.'
 # Synchronizing data file
 echo 'Synchronizing data file from server ${serverip}'
 service rsync start
-cp ./pw.passwd /data/pw.passwd
 rsync -vazu --progress --delete root@${serverip}::xlpdata /data/xlpsystem/ --password-file=/data/pw.passwd
 echo 'Data successfully synchronized.'
 
@@ -67,6 +72,7 @@ echo 'Starting rsync daemon...'
 echo 'Copying file...'
 cp ./pw.password /data/pw.password
 cp ./rsyncd.conf /etc/rsyncd.conf
+chmod 600 /data/pw.password
 echo 'Starting service...'
 rsync --daemon --config=/etc/rsyncd.conf
 echo 'rsync daemon successfully launched.'
