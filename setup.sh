@@ -1,6 +1,7 @@
 #! /bin/bash
 
-serverip='47.104.10.43'
+serverip='47.104.10.43
+typeset -l dirname
 dirname=$(basename `pwd`)
 
 echo 'Start deploying XLP system...'
@@ -50,22 +51,22 @@ docker-compose up -d
 echo 'Waiting for 30s for containers to finish initializing...'
 sleep 30s
 
-echo 'Fetching data from server...' #===============================================
-cp ./pw.passwd /data/pw.passwd
-chmod 600 /data/pw.passwd
-rsync -vazu --progress --delete root@${serverip}::xlpdb /data/db_pak --password-file=/data/pw.passwd
-echo 'Restoring data...'
-docker exec -u root ${dirname}_mariadb_1 mysql -u root -A -p W2qgpsLtQt < /data/db_pak/xlp.sql
-
-echo 'Stopping containers...'
-docker-compose down
-echo 'Containers successfully initialized.'
-
 # Synchronizing data file
 echo 'Synchronizing data file from server ${serverip}'
 service rsync start
 rsync -vazu --progress --delete root@${serverip}::xlpdata /data/xlpsystem/ --password-file=/data/pw.passwd
 echo 'Data successfully synchronized.'
+
+echo 'Fetching data from server ${serverip}' #===============================================
+cp ./pw.passwd /data/pw.passwd
+chmod 600 /data/pw.passwd
+rsync -vazu --progress --delete root@${serverip}::xlpdb /data/db_pak --password-file=/data/pw.passwd
+echo 'Restoring data...'
+docker exec -u root ${dirname}_mariadb_1 mysql -uroot -pW2qgpsLtQt -A < /data/db_pak/xlp.sql
+
+echo 'Stopping containers...'
+docker-compose down
+echo 'Containers successfully initialized.'
 
 # Starting rsync daemon
 echo 'Starting rsync daemon...'
