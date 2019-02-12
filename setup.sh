@@ -51,12 +51,6 @@ docker-compose up -d
 echo 'Waiting for 30s for containers to finish initializing...'
 sleep 30s
 
-# Synchronizing data file
-echo 'Synchronizing data file from server ${serverip}'
-service rsync start
-rsync -vazu --progress --delete root@${serverip}::xlpdata /data/xlpsystem/ --password-file=/data/pw.passwd
-echo 'Data successfully synchronized.'
-
 echo 'Fetching data from server ${serverip}' #===============================================
 cp ./pw.passwd /data/pw.passwd
 chmod 600 /data/pw.passwd
@@ -67,6 +61,12 @@ docker exec -u root ${dirname}_mariadb_1 mysql -uroot -pW2qgpsLtQt -A < /data/db
 echo 'Stopping containers...'
 docker-compose down
 echo 'Containers successfully initialized.'
+
+# Synchronizing data file
+echo 'Synchronizing data file from server ${serverip}'
+service rsync start
+rsync -vazu --progress --delete root@${serverip}::xlpdata /data/xlpsystem/ --password-file=/data/pw.passwd
+echo 'Data successfully synchronized.'
 
 # Starting rsync daemon
 echo 'Starting rsync daemon...'
