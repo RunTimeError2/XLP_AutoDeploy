@@ -47,7 +47,7 @@ echo 'Finished checking system environment.'
 # Initializing containers
 echo 'Initializing containers, it will take a few minutes for the first time...'
 docker-compose up -d
-echo 'Waiting 30s for containers to finish initializing...'
+echo 'Waiting for 30s for containers to finish initializing...'
 sleep 30s
 
 echo 'Fetching data from server...' #===============================================
@@ -83,7 +83,7 @@ echo 'rsync daemon successfully launched.'
 
 # Restart containers
 echo 'Restarting containers...'
-./up
+docker-compose up -d
 echo 'Containers successfully restarted.'
 
 echo 'Deployment completed.'
