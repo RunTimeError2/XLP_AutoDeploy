@@ -58,7 +58,7 @@ echo 'Extractting backing-up data...'
 unzip ./TensorCloud/xlpsystem/backups/xlpsystem_empty_20190206.zip
 echo 'Copying data to /data ...'
 rm -r /data/xlpsystem
-cp -r ./TensorCloud/xlpsystem/backups/xlpsystem /data/xlpsystem
+cp -r ./xlpsystem/* /data/xlpsystem/
 chmod -R 777 /data/xlpsystem
 
 echo 'Launching containers...'

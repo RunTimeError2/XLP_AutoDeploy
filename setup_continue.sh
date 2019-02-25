@@ -6,6 +6,12 @@ dirname=$(basename `pwd`)
 
 echo 'Shutting down current containers...'
 docker-compose down
+
+echo 'Backing up configuration files...'
+mkdir /data/conf_bak
+cp /data/xlpsystem/mediawiki/LocalSettings.php /data/conf_bak/LocalSettings.php
+cp /data/xlpsystem/matomo/config/config.ini.php /data/conf_bak/config.ini.php
+
 echo 'Deleting empty database...'
 rm -r /data/xlpsystem/mariadb
 
@@ -20,3 +26,4 @@ chmod -R 777 /data/xlpsystem
 
 echo 'Restarting containers...'
 docker-compose up -d
+docker cp ./xlp.png ${dirname}_mediawiki_1:/var/www/html/resources/assets/xlp.png
