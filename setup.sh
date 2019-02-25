@@ -1,6 +1,6 @@
 #! /bin/bash
 
-serverip='47.104.10.43
+serverip='18.218.155.85'
 typeset -l dirname
 dirname=$(basename `pwd`)
 
@@ -51,7 +51,7 @@ docker-compose up -d
 echo 'Waiting for 30s for containers to finish initializing...'
 sleep 30s
 
-echo 'Fetching data from server ${serverip}' #===============================================
+echo 'Fetching data from server' ${serverip}
 cp ./pw.passwd /data/pw.passwd
 chmod 600 /data/pw.passwd
 rsync -vazu --progress --delete root@${serverip}::xlpdb /data/db_pak --password-file=/data/pw.passwd
@@ -85,6 +85,8 @@ echo 'rsync daemon successfully launched.'
 # Restart containers
 echo 'Restarting containers...'
 docker-compose up -d
+echo 'Copying logo...'
+docker cp ./xlp.png ${dirname}_mariadb_1:/var/www/html/resources/assets/xlp.png
 echo 'Containers successfully restarted.'
 
 echo 'Deployment completed.'
