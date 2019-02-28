@@ -8,6 +8,12 @@ Just run setup.sh and it will be finished automatically.
 
 - Ubuntu server 16.04
 
+## Steps
+
+1. Run setup_empty.sh to deploy a system with empty database.
+
+2. Run setup_continue.sh to download and deploy data from http://xlp.mit.edu/
+
 ## Current functions
 
 - Install necessary software, including Docker, pip, docker-compose, Apache2
