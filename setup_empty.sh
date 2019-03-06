@@ -34,7 +34,7 @@ fi
 which apache2
 if [ $? -ne 0 ]; then
 	echo 'Apache2 not installed yet. Installing Apache2...'
-	apt-get install apache2 -yet
+	apt-get install apache2 -y
 else
 	echo 'Apache2 already installed.'
 fi
