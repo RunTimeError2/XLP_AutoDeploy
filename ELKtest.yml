@@ -1,0 +1,49 @@
+version: '2'
+services:
+  mariadb:
+    image: mariadb:10.3
+    restart: always
+    environment:
+    - MYSQL_ROOT_PASSWORD=W2qgpsLtQt
+    volumes:
+    - /data/xlpsystem/mariadb/:/var/lib/mysql
+    
+  mediawiki:
+    image: xlpsystem/mediawiki:20180827140844
+    restart: always
+    ports:
+    - 81:80
+    volumes:
+    - /data/xlpsystem/mediawiki:/xlp_data
+    - /data/xlpsystem/mediawiki_dev:/xlp_dev
+    depends_on:
+    - mariadb
+    - matomo
+    - elasticsearch
+    
+  elasticsearch:
+    image: xlpsystem/elasticsearch:20180822142218
+    volumes:
+    - /data/xlpsystem/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+    - discovery.type=single-node
+    - bootstrap.memory_lock=true
+    - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+    - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+        
+  kibana:
+    image: xlpsystem/kibana:20180821233221
+    ports:
+    - 84:5601
+    depends_on:
+    - elasticsearch
+    
+  logstash:
+    image: logstash:5.6.15
+    depends_on:
+    - elasticsearch
